@@ -3,11 +3,8 @@ services:
     image: mysql:8.0
     container_name: readify-mysql
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: bookstore
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin123
+    env_file:
+      - .env
     ports:
       - "3306:3306"
     volumes:
@@ -22,6 +19,8 @@ services:
     image: mongo:6
     container_name: readify-mongo
     restart: always
+    env_file:
+      - .env
     ports:
       - "27017:27017"
     volumes:
@@ -41,15 +40,17 @@ services:
         condition: service_healthy
       mongodb:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
-      NODE_ENV: development
-      PORT: 4001
-      GRAPHQL_PATH: /graphql
-      MYSQL_HOST: mysql
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin123
-      MYSQL_DATABASE: bookstore
-      MONGODB_URI: mongodb://readify-mongo:27017/authdb
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: ${PORT:-4001}
+      GRAPHQL_PATH: ${GRAPHQL_PATH:-/graphql}
+      MYSQL_HOST: ${MYSQL_HOST:-mysql}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MONGODB_URI: ${MONGODB_URI}
     ports:
       - "4001:4001"
     command: ["npm", "run", "dev"]
