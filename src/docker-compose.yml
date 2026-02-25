@@ -1,0 +1,97 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: readify-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bookstore
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      retries: 10
+      timeout: 3s
+
+  mongodb:
+    image: mongo:6
+    container_name: readify-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      retries: 10
+      timeout: 3s
+
+  bookstore-api:
+    build: .
+    container_name: bookstore-api
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 4001
+      GRAPHQL_PATH: /graphql
+      MYSQL_HOST: mysql
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin123
+      MYSQL_DATABASE: bookstore
+      MONGODB_URI: mongodb://readify-mongo:27017/authdb
+    ports:
+      - "4001:4001"
+    command: ["npm", "run", "dev"]
+    volumes:
+      - .:/usr/src/app
+    healthcheck:
+      test: ["CMD-SHELL", "cat /dev/null > /dev/tcp/localhost/4001 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: readify-gateway
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - bookstore-api
+    env_file: ./api-gateway/.env
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: readify-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: readify-grafana
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+  
+
+volumes:
+  mysql_data:
+  mongo_data:
