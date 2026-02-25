@@ -24,15 +24,14 @@ PORT=4001
 GRAPHQL_PATH=/graphql
 
 # MySQL (Sequelize)
-DB_HOST=mysql
-DB_PORT=3306
-DB_USER=root
-DB_PASS=example
-DB_NAME=bookstore
+DB_HOST=<DB_HOST>
+DB_PORT=<DB_PORT>
+DB_USER=<DB_USER>
+DB_PASS=<DB_PASSWORD>
+DB_NAME=<DB_NAME>
 
 # MongoDB
-MONGO_URI=mongodb://mongo:27017/bookstore
-
+MONGO_URI=<MONGO_CONNECTION_STRING>
 # JWT
 JWT_SECRET=your_jwt_secret
 JWT_EXPIRES_IN=15m
