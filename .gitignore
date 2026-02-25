@@ -1,0 +1,41 @@
+# Node dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+*.out
+*.err
+
+# Build artifacts
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+*.pid
+*.seed
+*.bak
+
+# Database data (volumes handled by Docker)
+mysql_data/
+mongo_data/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+
+# Coverage / Testing
+coverage/
