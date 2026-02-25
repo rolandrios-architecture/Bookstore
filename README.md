@@ -142,5 +142,6 @@ MIT
 
 
 ## Architecture
-<img width="1109" height="427" alt="image" src="https://github.com/user-attachments/assets/4eb25c5b-2bec-42df-ace2-edc8f39841b0" />
+<img width="1186" height="406" alt="image" src="https://github.com/user-attachments/assets/ae8733ef-3b2f-4027-96fc-7f5e26ab27f4" />
+
 
